@@ -41,11 +41,11 @@ int main ()
   while (1)
   {
 	  
-	  int count = serialDataAvail(serial_port);
+    int count = serialDataAvail(serial_port);
     while (count > 0)
     {
       count--;
-		  c = serialGetchar(serial_port);		/* receive character serially*/	
+      c = serialGetchar(serial_port);		/* receive character serially*/	
       if (c == 0xCE)
       {
         printXYZ(buf);
@@ -57,7 +57,7 @@ int main ()
         buf[i++] = c;
       }
     }
-	}
+  }
   serialClose(serial_port);
 }
 
