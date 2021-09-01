@@ -40,7 +40,6 @@ int main ()
 
   while (1)
   {
-	  
     int count = serialDataAvail(serial_port);
     while (count > 0)
     {
