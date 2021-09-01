@@ -1,0 +1,2 @@
+# AccDriver
+Linux accelerometer driver
