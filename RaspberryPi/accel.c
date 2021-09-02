@@ -74,4 +74,3 @@ void accDeinit(void)
 {
   serialClose(serialPort);
 }
-

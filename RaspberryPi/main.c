@@ -45,29 +45,29 @@ int main(int argc, char *argv[])
     return -1;
   }
 
-	while ((opt = getopt(argc, argv, "l")) != -1)
-	{
-		switch (opt)
-		{
+  while ((opt = getopt(argc, argv, "l")) != -1)
+  {
+  switch (opt)
+    {
 			case 'l':
-				printf("loop mode\n");
-				loop = true;
-				break;				
+        printf("loop mode\n");
+        loop = true;
+        break;				
       default:
-				fprintf(stderr, "Usage: %s [-l]\n", argv[0]);
-				exit(EXIT_FAILURE);
-		}
-	}
+        fprintf(stderr, "Usage: %s [-l]\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+  }
 
-	do
-	{
-  	data = accGetData();
-  	accPrint(&data);
+  do
+  {
+    data = accGetData();
+    accPrint(&data);
 
-		if (loop)
-			msleep(500);
+    if (loop)
+      msleep(500);
 
-	} while (loop);
+  } while (loop);
 
   accDeinit();
   return 0;
