@@ -1,5 +1,3 @@
 all:
-	gcc -g main.c -o main
+	gcc -g -o main main.c accel.c -I. -lwiringPi
 
-pi:
-	gcc -g main_pi.c -o main_pi -lwiringPi
