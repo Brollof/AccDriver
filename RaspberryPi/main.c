@@ -10,30 +10,31 @@
 
 int msleep(long tms)
 {
-    struct timespec ts;
-    int ret;
+  struct timespec ts;
+  int ret;
 
-    if (tms < 0)
-    {
-        errno = EINVAL;
-        return -1;
-    }
+  if (tms < 0)
+  {
+    errno = EINVAL;
+    return -1;
+  }
 
-    ts.tv_sec = tms / 1000;
-    ts.tv_nsec = (tms % 1000) * 1000000;
+  ts.tv_sec = tms / 1000;
+  ts.tv_nsec = (tms % 1000) * 1000000;
 
-    do {
-        ret = nanosleep(&ts, &ts);
-    } while (ret && errno == EINTR);
+  do
+  {
+    ret = nanosleep(&ts, &ts);
+  } while (ret && errno == EINTR);
 
-    return ret;
+  return ret;
 }
 
 int main(int argc, char *argv[])
 {
   accel_t data = {0};
-	bool loop = false;
-	int opt;
+  bool loop = false;
+  int opt;
 
   if (accInit() == true)
   {
@@ -47,9 +48,9 @@ int main(int argc, char *argv[])
 
   while ((opt = getopt(argc, argv, "l")) != -1)
   {
-  switch (opt)
+    switch (opt)
     {
-			case 'l':
+      case 'l':
         printf("loop mode\n");
         loop = true;
         break;				
