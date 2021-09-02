@@ -8,7 +8,9 @@
 
 #include "accel.h"
 
+#define BAUD_RATE 9600
 
+static const char* serialName = "/dev/serial0";
 static int serialPort = 0;
 
 static void printXYZ_raw(uint8_t *buf)
@@ -27,7 +29,7 @@ void accPrint(accel_t *data)
  
 bool accInit(void)
 {
-  serialPort = serialOpen("/dev/serial0", 9600);
+  serialPort = serialOpen(serialName, serialPort);
   if (serialPort < 0)
   {
     return false;
@@ -44,9 +46,9 @@ bool accInit(void)
 
 accel_t accGetData(void)
 {
-	uint8_t buf[16] = {0};
+	uint8_t buf[8] = {0};
 	uint8_t i = 0;
-	uint8_t c = 'g'; // get data
+	uint8_t c = 'g'; // get data command
 	accel_t data = {0};
 
 	serialPutchar(serialPort, c);
@@ -64,9 +66,6 @@ accel_t accGetData(void)
   data.x = buf[0] | (buf[1] << 8);
   data.y = buf[2] | (buf[3] << 8);
   data.z = buf[4] | (buf[5] << 8);
-
-  printXYZ_raw(buf);
-  accPrint(&data);
 
 	return data;	
 }

@@ -8,9 +8,8 @@
 
 int main(void)
 {
-  printf("Start\n");
-  
   accel_t data = {0};
+
   if (accInit() == true)
   {
     printf("acc initialized\n");
@@ -18,11 +17,12 @@ int main(void)
   else
   {
     printf("acc init ERROR!\n");
+    return -1;
   }
 
   data = accGetData();
   accPrint(&data);
-
   accDeinit();
+
   return 0;
 }
