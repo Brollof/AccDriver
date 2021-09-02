@@ -1,1 +1,1 @@
-Sending accelerometer reading from STM32 to RaspberryPi using USART interface.
+Sending accelerometer readings from STM32 to RaspberryPi using USART interface.
