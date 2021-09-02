@@ -70,11 +70,31 @@ static void MX_USART2_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-static void sendChar(char c)
+static uint8_t rxData = 0;
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	while(CDC_Transmit_FS((uint8_t *)&c, 1) != USBD_OK);
+  if (huart == &huart2)
+  {
+	  HAL_UART_Receive_IT(&huart2, &rxData, 1);
+  }
 }
 
+static void sendChar(char c)
+{
+  uint16_t retries = 1000;
+	while (retries)
+  {
+    if (CDC_Transmit_FS((uint8_t *)&c, 1) != USBD_OK)
+    {
+      retries--;
+    }
+    else
+    {
+      return;
+    }
+  }
+}
 
 #ifdef __GNUC__
   int __io_putchar(int c)
@@ -124,45 +144,59 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  uint8_t ok = 0;
   int16_t xyzBuf[3] = {0};
-  uint8_t txData[7] = {0}; // {X0, X1, Y0, Y1, Z0, Z1, 0xCE}
+  uint8_t txData[6] = {0}; // {X0, X1, Y0, Y1, Z0, Z1}
+  HAL_StatusTypeDef status;
+  uint32_t lastTimestamp = 0, now = 0;
 
-  if (BSP_ACCELERO_Init() == ACCELERO_OK)
-  {
-	  ok = 1;
-  }
+
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  HAL_StatusTypeDef status;
-  
+  if (BSP_ACCELERO_Init() != ACCELERO_OK)
+  {
+    printf("BSP_ACCELERO_Init() ERROR!\n");
+  }
+
+  HAL_UART_Receive_IT(&huart2, &rxData, 1);
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
+    if (rxData != 0)
+    {
+      if (rxData == 'g')
+      {
+        printf("Sending: x: %d, y: %d, z: %d\n", xyzBuf[0], xyzBuf[1], xyzBuf[2]);
+        txData[0] = xyzBuf[0] & 0x00FF;
+        txData[1] = xyzBuf[0] >> 8;
+        txData[2] = xyzBuf[1] & 0x00FF;
+        txData[3] = xyzBuf[1] >> 8;
+        txData[4] = xyzBuf[2] & 0x00FF;
+        txData[5] = xyzBuf[2] >> 8;
+
+        status = HAL_UART_Transmit(&huart2, txData, sizeof(txData), 1000);
+        printf("transmit status: %d\n", status);
+      }
+
+      rxData = 0;
+    }
+
     BSP_ACCELERO_GetXYZ(xyzBuf);
 
-	  printf("Odbyt odbyt: %d, x: %d, y: %d, z: %d\n", ok, xyzBuf[0], xyzBuf[1], xyzBuf[2]);
-    txData[0] = xyzBuf[0] & 0x00FF;
-    txData[1] = xyzBuf[0] >> 8;
-    txData[2] = xyzBuf[1] & 0x00FF;
-    txData[3] = xyzBuf[1] >> 8;
-    txData[4] = xyzBuf[2] & 0x00FF;
-    txData[5] = xyzBuf[2] >> 8;
-    txData[6] = 0xCE;
-
-    status = HAL_UART_Transmit(&huart2, txData, sizeof(txData), 1000);
-    // status = HAL_UART_Transmit(&huart2, txData, strlen(txData), 1000);
-    printf("transmit status: %d\n", status);
-
-	  HAL_GPIO_TogglePin(LD6_GPIO_Port, LD6_Pin);
-	  HAL_Delay(1000);
+    now = HAL_GetTick();
+    if (now - lastTimestamp >= 1000)
+    {
+      lastTimestamp = now;
+  	  HAL_GPIO_TogglePin(LD6_GPIO_Port, LD6_Pin);
+    }
+	  HAL_Delay(100);
   }
   /* USER CODE END 3 */
 }
