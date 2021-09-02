@@ -4,6 +4,8 @@
 #include <linux/fs.h>
 #include <linux/uaccess.h>
 
+#include "accel.h"
+
 #define DEV_NAME "accel"
 #define LOG_PREFIX "["DEV_NAME" dev] "
 
@@ -24,6 +26,7 @@ static struct file_operations fops =
 static int dev_open(struct inode *inode, struct file *fp)
 {
   printk(KERN_INFO LOG_PREFIX "Open\n");
+  accInit();
   return 0;
 }
 
@@ -42,6 +45,7 @@ static ssize_t dev_write(struct file *fp, const char __user *buf, size_t len, lo
 static int dev_release(struct inode *inode, struct file *fp)
 {
   printk(KERN_INFO LOG_PREFIX "Release\n");
+  accDeinit();
   return 0;
 }
 
