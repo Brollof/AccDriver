@@ -1,4 +1,4 @@
-TARGET_MODULE:=odbyt-module
+TARGET_MODULE:=accel-module
 
 # If we are running by kernel building system
 ifneq ($(KERNELRELEASE),)
