@@ -29,7 +29,7 @@ void accPrint(accel_t *data)
  
 bool accInit(void)
 {
-  serialPort = serialOpen(serialName, serialPort);
+  serialPort = serialOpen(serialName, BAUD_RATE);
   if (serialPort < 0)
   {
     return false;
