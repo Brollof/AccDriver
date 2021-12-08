@@ -46,28 +46,28 @@ bool accInit(void)
 
 accel_t accGetData(void)
 {
-	uint8_t buf[8] = {0};
-	uint8_t i = 0;
-	uint8_t c = 'g'; // get data command
-	accel_t data = {0};
+  uint8_t buf[8] = {0};
+  uint8_t i = 0;
+  uint8_t c = 'g'; // get data command
+  accel_t data = {0};
 
-	serialPutchar(serialPort, c);
+  serialPutchar(serialPort, c);
 
-	while (i < ACC_DATA_LEN)
-	{
-		int count = serialDataAvail(serialPort);
-		while (count > 0)
-		{
-			count--;
-			buf[i++] = serialGetchar(serialPort);
-		}
-	}	
+  while (i < ACC_DATA_LEN)
+  {
+    int count = serialDataAvail(serialPort);
+    while (count > 0)
+    {
+      count--;
+      buf[i++] = serialGetchar(serialPort);
+    }
+  }	
 	
   data.x = buf[0] | (buf[1] << 8);
   data.y = buf[2] | (buf[3] << 8);
   data.z = buf[4] | (buf[5] << 8);
 
-	return data;	
+  return data;	
 }
 
 void accDeinit(void)
