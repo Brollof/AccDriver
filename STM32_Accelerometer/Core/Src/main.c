@@ -76,14 +76,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
   if (huart == &huart2)
   {
-	  HAL_UART_Receive_IT(&huart2, &rxData, 1);
+    HAL_UART_Receive_IT(&huart2, &rxData, 1);
   }
 }
 
 static void sendChar(char c)
 {
   uint16_t retries = 1000;
-	while (retries)
+  while (retries)
   {
     if (CDC_Transmit_FS((uint8_t *)&c, 1) != USBD_OK)
     {
@@ -97,15 +97,15 @@ static void sendChar(char c)
 }
 
 #ifdef __GNUC__
-  int __io_putchar(int c)
+int __io_putchar(int c)
 #else
-  int fputc(int c, FILE *f)
+int fputc(int c, FILE *f)
 #endif
-  {
-    if (c == '\n') sendChar('\r');
-    sendChar(c);
-    return c;
-  }
+{
+  if (c == '\n') sendChar('\r');
+  sendChar(c);
+  return c;
+}
 
 /* USER CODE END 0 */
 
@@ -194,9 +194,9 @@ int main(void)
     if (now - lastTimestamp >= 1000)
     {
       lastTimestamp = now;
-  	  HAL_GPIO_TogglePin(LD6_GPIO_Port, LD6_Pin);
+      HAL_GPIO_TogglePin(LD6_GPIO_Port, LD6_Pin);
     }
-	  HAL_Delay(100);
+    HAL_Delay(100);
   }
   /* USER CODE END 3 */
 }
